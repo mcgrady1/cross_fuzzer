@@ -1,0 +1,58 @@
+<html>
+<head>
+<title>Target page</title>
+
+<style>body { background-color: #F0FFFF; }</style>
+
+<script>
+
+function set_up_stuff() {
+
+  if (Math.random() < 0.5)
+    document.designMode = 'on';
+
+  document.getElementById('editable').contentEditable = 'true';
+}
+
+</script>
+
+</head>
+<body onload="set_up_stuff()">
+
+<object></object>
+
+<embed src="text6.swf"
+  type="application/x-shockwave-flash" 
+  allowscriptaccess="always" 
+  width="240" 
+  height="190">
+</embed>
+
+<p>
+
+<img src="lolcat.jpg">
+
+<form>
+<input type=file>
+<input type=password>
+</form>
+
+<svg>Sadly, not supported yet...</svg>
+<canvas></canvas>
+
+<iframe></iframe>
+
+<a href="#">Link</a>
+<table><tr><td>X</td></tr></table>
+
+<link href="#" rel="foo">
+
+<isindex></isindex>
+<map></map>
+<ol><li>X</ol>
+<div id=editable></div>
+<xmp>X</xmp>
+<div></div>
+<textarea></textarea>
+
+</body></html>

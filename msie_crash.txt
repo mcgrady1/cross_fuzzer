@@ -1,0 +1,142 @@
+Fuzzer variant: cross_fuzz_msie_randomized_seed.html
+OS: Windows 7 Pro (en) 64 bit
+MSIE: 8.0.7600.16385
+Plugins: none (no Flash, no Java, no PDF)
+
+This MSHTML.DLL ReleaseInterface() arbitrary EIP crash (via CDoc:Close ->
+CMarkup::TearDownMarkup -> CMarkup::BreakCircularMemoryReferences) crops
+up every few hours of fuzzing in my test setup. Several sample call stacks
+and register values shown. On the surface of it, looks like EIP is pretty much
+fully attacker-controlled.
+
+CVE: CVE-2011-0346
+
+The problem may be related to new GC optimizations in MSIE8:
+http://msdn.microsoft.com/en-us/library/dd361842%28v=vs.85%29.aspx
+
+I believe this vulnerability may be known to third parties:
+http://lcamtuf.coredump.cx/cross_fuzz/known_vuln.txt
+
+== CASE 1 ==
+
+WARNING: Frame IP not in any known module. Following frames may be wrong.
+0x8b909090 <- koff
+MSHTML!ReleaseInterface+0xa
+MSHTML!CAttrArray::FreeSpecial2+0xe4
+MSHTML!CMarkup::BreakAASpecial+0xf
+MSHTML!CMarkup::BreakCircularMemoryReferences+0x7f
+MSHTML!CMarkup::TearDownMarkupHelper+0xb0
+MSHTML!CMarkup::TearDownMarkup+0x55
+MSHTML!CDoc::Close+0x5c
+IEFRAME!CDocObjectHost::_UnBind+0xaf
+IEFRAME!CDocObjectHost::DestroyHostWindow+0x4a
+IEFRAME!CDocObjectView::DestroyViewWindow+0x9d
+IEFRAME!CBaseBrowser2::v_ReleaseShellView+0x122
+IEFRAME!CShellBrowser2::_DoFinalCleanup+0xec
+IEFRAME!CShellBrowser2::_OnConfirmedClose+0xe8
+IEFRAME!CShellBrowser2::OnClose+0x134
+IEFRAME!CTabWindow::_TabWindowThreadProc+0x420
+IEFRAME!LCIETab_ThreadProc+0x2c1
+iertutil!CIsoScope::RegisterThread+0xab
+KERNEL32!BaseThreadInitThunk+0xe
+ntdll_774f0000!__RtlUserThreadStart+0x70
+
+gs	2b
+fs	53
+es	2b
+ds	2b
+edi	8b
+esi	7d1ce80
+ebx	5b6be88
+edx	7dcf1c0
+ecx	743100c2
+eax	5b6be88
+ebp	56ad8e8
+eip	8b909090
+cs	23
+efl	10206
+esp	56ad8cc
+ss	2b
+
+== CASE 2 ==
+
+WARNING: Frame IP not in any known module. Following frames may be wrong.
+0xba5ce804
+MSHTML!ReleaseInterface+0xa
+MSHTML!CAttrArray::FreeSpecial2+0xe4
+MSHTML!CMarkup::BreakAASpecial+0xf
+MSHTML!CMarkup::BreakCircularMemoryReferences+0x7f
+MSHTML!CMarkup::TearDownMarkupHelper+0xb0
+MSHTML!CMarkup::TearDownMarkup+0x55
+MSHTML!CDoc::Close+0x5c
+IEFRAME!CDocObjectHost::_UnBind+0xaf
+IEFRAME!CDocObjectHost::DestroyHostWindow+0x4a
+IEFRAME!CDocObjectView::DestroyViewWindow+0x9d
+IEFRAME!CBaseBrowser2::v_ReleaseShellView+0x122
+IEFRAME!CShellBrowser2::_DoFinalCleanup+0xec
+IEFRAME!CShellBrowser2::_OnConfirmedClose+0xe8
+IEFRAME!CShellBrowser2::OnClose+0x134
+IEFRAME!CTabWindow::_TabWindowThreadProc+0x420
+IEFRAME!LCIETab_ThreadProc+0x2c1
+iertutil!Ordinal503+0xf0
+KERNEL32!BaseThreadInitThunk+0x12
+ntdll_774f0000!RtlInitializeExceptionChain+0x63
+
+gs	2b
+fs	53
+es	2b
+ds	2b
+edi	7d
+esi	815d300
+ebx	81ba948
+edx	809db70
+ecx	719d0080
+eax	81ba948
+ebp	86bdbc8
+eip	ba5ce804
+cs	23
+efl	10206
+esp	86bdbac
+ss	2b
+
+== CASE 3 ==
+
+WARNING: Frame IP not in any known module. Following frames may be wrong.
+0xffecdce8
+MSHTML!ReleaseInterface+0xa
+MSHTML!CAttrArray::FreeSpecial2+0xe4
+MSHTML!CMarkup::BreakAASpecial+0xf
+MSHTML!CMarkup::BreakCircularMemoryReferences+0x7f
+MSHTML!CMarkup::TearDownMarkupHelper+0xb0
+MSHTML!CMarkup::TearDownMarkup+0x55
+MSHTML!CDoc::Close+0x5c
+IEFRAME!CDocObjectHost::_UnBind+0xaf
+IEFRAME!CDocObjectHost::DestroyHostWindow+0x4a
+IEFRAME!CDocObjectView::DestroyViewWindow+0x9d
+IEFRAME!CBaseBrowser2::v_ReleaseShellView+0x122
+IEFRAME!CShellBrowser2::_DoFinalCleanup+0xec
+IEFRAME!CShellBrowser2::_OnConfirmedClose+0xe8
+IEFRAME!CShellBrowser2::OnClose+0x134
+IEFRAME!CTabWindow::_TabWindowThreadProc+0x420
+IEFRAME!LCIETab_ThreadProc+0x2c1
+iertutil!CIsoScope::RegisterThread+0xab
+KERNEL32!BaseThreadInitThunk+0xe
+ntdll_774f0000!__RtlUserThreadStart+0x70
+
+gs	2b
+fs	53
+es	2b
+ds	2b
+edi	7d
+esi	58cb3c8
+ebx	7a2f558
+edx	7b10240
+ecx	72ce0014
+eax	7a2f558
+ebp	517d9f8
+eip	ffecdce8
+cs	23
+efl	10202
+esp	517d9dc
+ss	2b
+

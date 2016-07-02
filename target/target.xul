@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+
+<window title="Hello World!"
+  xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+  width="250"
+  height="200"> 
+<hbox flex="1" align="center">
+ <image src="mozilla-big.gif" />
+  <text style="font-weight: bold;" value="Hello World!" />
+</hbox>
+</window>
